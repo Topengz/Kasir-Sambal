@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>POS Sambal Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #D32F2F; /* Merah Sambal */
+            --primary-light: #FFEBEE;
+            --secondary: #E65100; /* Oranye Hangat */
+            --bg-body: #F8F9FA;
+            --bg-card: #FFFFFF;
+            --text-main: #212121;
+            --text-muted: #666666;
+            --border-color: #E0E0E0;
+            --radius: 16px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --transition: all 0.25s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            padding-bottom: 100px; /* Ruang untuk sticky total di bawah */
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px 16px;
+            text-align: center;
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+            box-shadow: 0 4px 20px rgba(211, 47, 47, 0.2);
+        }
+
+        header h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        header p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        main {
+            padding: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 16px 0 12px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Grid Produk */
+        .grid-produk {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .card-produk {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 16px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 110px;
+        }
+
+        .card-produk:active {
+            transform: scale(0.95);
+            background-color: var(--primary-light);
+            border-color: var(--primary);
+        }
+
+        .card-produk i {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .card-produk h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .card-produk span {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Keranjang Belanja */
+        .keranjang-container {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            margin-top: 12px;
+            min-height: 100px;
+        }
+
+        .keranjang-kosong {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 24px 0;
+            font-size: 0.9rem;
+        }
+
+        .item-keranjang {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #F0F0F0;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .item-keranjang:last-child {
+            border-bottom: none;
+        }
+
+        .item-info h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .item-info p {
+            font-size: 0.8rem;
+            color: var(--secondary);
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        .item-kontrol {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-qty {
+            background: #F0F0F0;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .btn-qty:active {
+            background: var(--border-color);
+        }
+
+        .qty-val {
+            font-size: 0.95rem;
+            font-weight: 600;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .btn-hapus {
+            background: none;
+            border: none;
+            color: #FF5252;
+            padding: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        /* Sticky Bottom Bar */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+            padding: 12px 16px env(safe-area-inset-bottom);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 99;
+            max-width: 600px;
+            margin: 0 auto;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+        }
+
+        .total-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-info span {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .total-info h2 {
+            font-size: 1.3rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .Aksi-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-reset {
+            background: #ECEFF1;
+            color: #455A64;
+            flex: 0.4;
+        }
+
+        .btn-cetak {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            flex: 0.6;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+            opacity: 0.9;
+        }
+
+        /* Modal Pilihan Berat */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: flex-end; /* Membuka dari bawah khas aplikasi HP modern */
+            z-index: 100;
+            visibility: hidden;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .modal.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            padding: 20px 16px;
+            transform: translateY(100%);
+            transition: var(--transition);
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .modal-header h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .btn-close {
+            background: #F0F0F0;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .opsi-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .opsi-item {
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .opsi-item.selected {
+            border-color: var(--primary);
+            background-color: var(--primary-light);
+        }
+
+        .opsi-label {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .opsi-harga {
+            font-weight: 700;
+            color: var(--secondary);
+            font-size: 0.95rem;
+        }
+
+        .btn-tambah-keranjang {
+            background: var(--primary);
+            color: white;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 16px;
+            cursor: pointer;
+        }
+
+        /* Modal Nota Ringkas */
+        .nota-box {
+            background: #FFF;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 16px;
+            border: 1px dashed #999;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+            white-space: pre-wrap;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1><i class="fa-solid fa-fire"></i> POS SAMBAL PREMIUM</h1>
+        <p>Aplikasi Kasir Praktis & Responsif HP</p>
+    </header>
+
+    <main>
+        <div class="section-title">
+            <i class="fa-solid fa-utensils" style="color: var(--primary)"></i> Pilih Menu Sambal
+        </div>
+        <div class="grid-produk" id="produk-container">
+            </div>
+
+        <div class="section-title">
+            <i class="fa-solid fa-shopping-cart" style="color: var(--secondary)"></i> Keranjang Belanja
+        </div>
+        <div class="keranjang-container" id="keranjang-container">
+            </div>
+    </main>
+
+    <div class="bottom-bar">
+        <div class="total-info">
+            <span>Total Bayar:</span>
+            <h2 id="total-harga">Rp 0</h2>
+        </div>
+        <div class="Aksi-buttons">
+            <button class="btn btn-reset" onclick="resetTransaksi()"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+            <button class="btn btn-cetak" onclick="prosesCetak()"><i class="fa-solid fa-receipt"></i> Simpan / Nota</button>
+        </div>
+    </div>
+
+    <div class="modal" id="modal-opsi" onclick="tutupModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 id="modal-judul-produk">Pilih Ukuran Berat</h3>
+                <button class="btn-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="opsi-list" id="modal-opsi-list">
+                </div>
+            <button class="btn-tambah-keranjang" onclick="tambahKeKeranjangFinal()">Tambah ke Keranjang</button>
+        </div>
+    </div>
+
+    <div class="modal" id="modal-nota" onclick="tutupModalNota(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-print"></i> Struk Transaksi</h3>
+                <button class="btn-close" onclick="closeModalNota()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="nota-box" id="nota-teks">
+                </div>
+            <button class="btn-tambah-keranjang" style="background: #2E7D32;" onclick="window.print()">
+                <i class="fa-solid fa-print"></i> Cetak / Simpan PDF
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 1. Data Utama Produk dan Harga per Kilo
+        const dataProduk = [
+            { id: 1, nama: "Sambal Habang", hargaKilo: 60000, ikon: "fa-pepper-hot" },
+            { id: 2, nama: "Sambal Kareh", hargaKilo: 60000, ikon: "fa-mortar-pestle" },
+            { id: 3, nama: "Sambal Rawon", hargaKilo: 60000, ikon: "fa-bowl-food" },
+            { id: 4, nama: "Sambal Sop", hargaKilo: 60000, ikon: "fa-soup" },
+            { id: 5, nama: "Kelapa Goreng", hargaKilo: 100000, ikon: "fa-seedling" }
+        ];
+
+        let keranjang = [];
+        let produkTerpilih = null;
+        let opsiTerpilihIndex = 0;
+
+        // Format Rupiah Indonesia
+        function formatRupiah(angka) {
+            return "Rp " + angka.toLocaleString('id-ID');
+        }
+
+        // Hitung Otomatis Opsi Ukuran Berdasarkan Harga Per Kilo
+        function dapatkanOpsiBerat(hargaKilo) {
+            return [
+                { label: "2,5 Ons", harga: (2.5 / 10) * hargaKilo },
+                { label: "7,5 Ons", harga: (7.5 / 10) * hargaKilo },
+                { label: "1,5 Kg", harga: 1.5 * hargaKilo }
+            ];
+        }
+
+        // Render Cards Produk Ke Layar Utama
+        function renderProduk() {
+            const container = document.getElementById('produk-container');
+            container.innerHTML = '';
+            
+            dataProduk.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'card-produk';
+                card.onclick = () => bukaModalOpsi(p.id);
+                
+                // Menggunakan ikon dinamis, jika ikon spesifik tidak ada pakai cabai bawaan
+                const iconClass = (p.ikon === 'fa-soup') ? 'fa-solid fa-bowl-rice' : `fa-solid ${p.ikon}`;
+
+                card.innerHTML = `
+                    <i class="${iconClass}"></i>
+                    <h3>${p.nama}</h3>
+                    <span>${formatRupiah(p.hargaKilo)} / kg</span>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Buka Pop-up Pilihan Berat
+        function bukaModalOpsi(idProduk) {
+            produkTerpilih = dataProduk.find(p => p.id === idProduk);
+            opsiTerpilihIndex = 0; // Default opsi pertama dipilih
+            
+            document.getElementById('modal-judul-produk').innerText = produkTerpilih.nama;
+            
+            const opsiListContainer = document.getElementById('modal-opsi-list');
+            opsiListContainer.innerHTML = '';
+            
+            const opsiBerat = dapatkanOpsiBerat(produkTerpilih.hargaKilo);
+            
+            opsiBerat.forEach((opsi, index) => {
+                const item = document.createElement('div');
+                item.className = `opsi-item ${index === 0 ? 'selected' : ''}`;
+                item.id = `opsi-idx-${index}`;
+                item.onclick = () => pilihOpsiIndex(index);
+                
+                item.innerHTML = `
+                    <span class="opsi-label">${opsi.label}</span>
+                    <span class="opsi-harga">${formatRupiah(opsi.harga)}</span>
+                `;
+                opsiListContainer.appendChild(item);
+            });
+            
+            document.getElementById('modal-opsi').classList.add('active');
+        }
+
+        // Ganti Pilihan Opsi Ukuran Berat di dalam Modal
+        function pilihOpsiIndex(index) {
+            document.querySelectorAll('.opsi-item').forEach(el => el.classList.remove('selected'));
+            document.getElementById(`opsi-idx-${index}`).classList.add('selected');
+            opsiTerpilihIndex = index;
+        }
+
+        function closeModal() {
+            document.getElementById('modal-opsi').classList.remove('active');
+        }
+
+        function tutupModal(e) {
+            if(e.target.id === 'modal-opsi') closeModal();
+        }
+
+        // Tambahkan Item dari Modal ke Daftar Keranjang Utama
+        function tambahKeKeranjangFinal() {
+            if (!produkTerpilih) return;
+            
+            const opsiBerat = dapatkanOpsiBerat(produkTerpilih.hargaKilo)[opsiTerpilihIndex];
+            
+            // Cek apakah produk dengan ukuran yang sama persis sudah masuk keranjang
+            const itemAda = keranjang.find(item => item.idProduk === produkTerpilih.id && item.ukuran === opsiBerat.label);
+            
+            if (itemAda) {
+                itemAda.qty += 1;
+            } else {
+                keranjang.push({
+                    idProduk: produkTerpilih.id,
+                    nama: produkTerpilih.nama,
+                    ukuran: opsiBerat.label,
+                    hargaSatuan: opsiBerat.harga,
+                    qty: 1
+                });
+            }
+            
+            closeModal();
+            renderKeranjang();
+        }
+
+        // Render Update Daftar Keranjang Belanja
+        function renderKeranjang() {
+            const container = document.getElementById('keranjang-container');
+            const totalHargaText = document.getElementById('total-harga');
+            
+            if (keranjang.length === 0) {
+                container.innerHTML = `<div class="keranjang-kosong"><i class="fa-solid fa-basket-shopping" style="font-size: 1.5rem; margin-bottom: 6px; display:block;"></i>Keranjang masih kosong</div>`;
+                totalHargaText.innerText = "Rp 0";
+                return;
+            }
+            
+            container.innerHTML = '';
+            let totalSemua = 0;
+            
+            keranjang.forEach((item, index) => {
+                const subtotal = item.hargaSatuan * item.qty;
+                totalSemua += subtotal;
+                
+                const div = document.createElement('div');
+                div.className = 'item-keranjang';
+                div.innerHTML = `
+                    <div class="item-info">
+                        <h4>${item.nama}</h4>
+                        <p>${item.ukuran} (${formatRupiah(item.hargaSatuan)})</p>
+                        <strong style="font-size: 0.9rem; color: var(--primary); display:block; margin-top:4px;">${formatRupiah(subtotal)}</strong>
+                    </div>
+                    <div class="item-kontrol">
+                        <button class="btn-qty" onclick="ubahQty(${index}, -1)">-</button>
+                        <span class="qty-val">${item.qty}</span>
+                        <button class="btn-qty" onclick="ubahQty(${index}, 1)">+</button>
+                        <button class="btn-hapus" onclick="hapusItem(${index})"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+            
+            totalHargaText.innerText = formatRupiah(totalSemua);
+        }
+
+        // Mengatur Jumlah Qty (+ / -)
+        function ubahQty(index, perubahan) {
+            keranjang[index].qty += perubahan;
+            if (keranjang[index].qty <= 0) {
+                keranjang.splice(index, 1);
+            }
+            renderKeranjang();
+        }
+
+        // Hapus Item Tertentu dari Keranjang
+        function hapusItem(index) {
+            keranjang.splice(index, 1);
+            renderKeranjang();
+        }
+
+        // Reset Transaksi Kembali Bersih
+        function resetTransaksi() {
+            if (keranjang.length === 0) return;
+            if (confirm("Apakah Sahabat yakin ingin mengosongkan seluruh keranjang?")) {
+                keranjang = [];
+                renderKeranjang();
+            }
+        }
+
+        // Tampilkan Nota Bersih yang Siap Disimpan/Screenshot
+        function prosesCetak() {
+            if (keranjang.length === 0) {
+                alert("Keranjang masih kosong, Sah!");
+                return;
+            }
+            
+            const notaBox = document.getElementById('nota-teks');
+            const waktu = new Date().toLocaleString('id-ID');
+            
+            let teksNota = `================================\n`;
+            teksNota += `        SAMBAL PREMIUM          \n`;
+            teksNota += `  Premium Taste & High Quality  \n`;
+            teksNota += `================================\n`;
+            teksNota += `Waktu : ${waktu}\n`;
+            teksNota += `Kasir : Ponsel Kasir Pintar\n`;
+            teksNota += `--------------------------------\n`;
+            
+            let totalSemua = 0;
+            keranjang.forEach(item => {
+                const subtotal = item.hargaSatuan * item.qty;
+                totalSemua += subtotal;
+                teksNota += `${item.nama}\n`;
+                teksNota += `  ${item.ukuran} x ${item.qty} @${item.hargaSatuan.toLocaleString('id-ID')} -> ${subtotal.toLocaleString('id-ID')}\n`;
+            });
+            
+            teksNota += `--------------------------------\n`;
+            teksNota += `TOTAL BAYAR  : Rp ${totalSemua.toLocaleString('id-ID')}\n`;
+            teksNota += `================================\n`;
+            teksNota += `  Terima Kasih Atas Kunjungan Anda \n`;
+            teksNota += `      Semoga Berkah & Lancar     \n`;
+            teksNota += `================================\n`;
+            
+            notaBox.textContent = teksNota;
+            document.getElementById('modal-nota').classList.add('active');
+        }
+
+        function closeModalNota() {
+            document.getElementById('modal-nota').classList.remove('active');
+        }
+
+        function tutupModalNota(e) {
+            if(e.target.id === 'modal-nota') closeModalNota();
+        }
+
+        // Jalankan render awal saat aplikasi dibuka
+        window.onload = () => {
+            renderProduk();
+            renderKeranjang();
+        };
+    </script>
+</body>
+</html>
