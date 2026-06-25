@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#8B0000" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Sambal Sedap" />
+  <title>🌶️ Sambal Sedap </title>
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Lora:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --merah: #8B0000;
+      --merah2: #c0392b;
+      --merah3: #e74c3c;
+      --emas: #FFD700;
+      --emas2: #f0c040;
+      --coklat: #2d0f00;
+      --coklat2: #1a0800;
+      --teks: #f5e6c8;
+      --teks2: rgba(245,230,200,0.6);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background: linear-gradient(160deg, var(--coklat2) 0%, var(--coklat) 60%, #1a0800 100%);
+      min-height: 100vh;
+      font-family: 'Lora', Georgia, serif;
+      color: var(--teks);
+      overscroll-behavior: none;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(90deg, var(--merah) 0%, var(--merah2) 50%, var(--merah) 100%);
+      padding: 18px 16px 14px;
+      text-align: center;
+      position: sticky; top: 0; z-index: 50;
+      border-bottom: 3px solid var(--emas);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.6);
+    }
+    header .sub { font-size: 10px; letter-spacing: 5px; color: var(--emas); margin-bottom: 4px; text-transform: uppercase; }
+    header h1 { font-family: 'Playfair Display', serif; font-size: 26px; color: #fff; letter-spacing: 2px; text-shadow: 2px 2px 8px rgba(0,0,0,0.7); }
+    header .waktu { font-size: 11px; color: var(--emas2); opacity: 0.8; margin-top: 3px; }
+
+    /* ── MAIN ── */
+    main { padding: 16px 12px 100px; max-width: 480px; margin: 0 auto; }
+
+    /* ── SECTION TITLE ── */
+    .sec-title {
+      font-size: 10px; letter-spacing: 5px; color: var(--emas);
+      text-align: center; text-transform: uppercase;
+      margin-bottom: 12px; opacity: 0.8;
+    }
+
+    /* ── GRID SAMBAL ── */
+    .grid-sambal {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .kartu-sambal {
+      border-radius: 14px;
+      padding: 16px 10px 14px;
+      text-align: center;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: transform .15s, box-shadow .15s;
+      position: relative;
+      overflow: hidden;
+      -webkit-user-select: none; user-select: none;
+    }
+    .kartu-sambal:active { transform: scale(0.94); }
+    .kartu-sambal .emoji { font-size: 38px; display: block; margin-bottom: 8px; }
+    .kartu-sambal .nama-sambal {
+      font-family: 'Playfair Display', serif;
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 1px; color: #fff;
+      text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+      margin-bottom: 6px;
+    }
+    .kartu-sambal .harga-tag {
+      display: inline-block;
+      background: rgba(0,0,0,0.4);
+      border-radius: 20px; padding: 2px 10px;
+      font-size: 11px; color: var(--emas);
+      letter-spacing: 0.5px;
+    }
+    /* shimmer efek */
+    .kartu-sambal::after {
+      content: '';
+      position: absolute; top: -50%; left: -60%;
+      width: 50%; height: 200%;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.12), transparent);
+      transform: skewX(-20deg);
+      transition: left .4s;
+    }
+    .kartu-sambal:active::after { left: 120%; }
+
+    /* ── PESANAN ── */
+    .box {
+      background: rgba(0,0,0,0.4);
+      border-radius: 16px;
+      border: 1px solid rgba(255,215,0,0.18);
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+    .box-head {
+      padding: 13px 16px;
+      background: rgba(139,0,0,0.35);
+      border-bottom: 1px solid rgba(255,215,0,0.12);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .box-head span { font-size: 13px; letter-spacing: 2px; color: var(--emas); font-weight: 600; }
+    .badge {
+      background: var(--merah2); color: #fff;
+      border-radius: 20px; padding: 2px 10px;
+      font-size: 12px; font-weight: 700;
+    }
+
+    .empty-msg {
+      padding: 28px 16px; text-align: center;
+      color: var(--teks2); font-size: 13px; line-height: 1.8;
+    }
+
+    .item-list { padding: 4px 14px; }
+    .item-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      animation: popIn .3s ease;
+    }
+    .item-row:last-child { border-bottom: none; }
+    .item-emoji { font-size: 22px; flex-shrink: 0; }
+    .item-info { flex: 1; min-width: 0; }
+    .item-nama { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .item-sub { font-size: 11px; color: var(--emas); opacity: 0.75; margin-top: 1px; }
+    .qty-wrap { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+    .btn-qty {
+      width: 27px; height: 27px; border-radius: 7px;
+      border: none; color: #fff; font-size: 16px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: transform .1s;
+    }
+    .btn-qty:active { transform: scale(0.85); }
+    .btn-minus { background: var(--merah); }
+    .btn-plus  { background: #27ae60; }
+    .qty-num { font-size: 15px; font-weight: 700; min-width: 20px; text-align: center; }
+    .item-total { font-size: 13px; font-weight: 700; color: var(--emas); flex-shrink: 0; min-width: 76px; text-align: right; }
+    .btn-hapus {
+      background: none; border: none; color: rgba(231,76,60,0.7);
+      font-size: 16px; cursor: pointer; padding: 0 2px; flex-shrink: 0;
+    }
+
+    /* ── TOTAL BOX ── */
+    .total-box {
+      margin: 0 14px 14px;
+      background: rgba(139,0,0,0.25);
+      border-radius: 12px;
+      border: 1px solid rgba(255,215,0,0.25);
+      overflow: hidden;
+    }
+    .total-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 13px 16px;
+      border-bottom: 1px solid rgba(255,215,0,0.12);
+    }
+    .total-label { font-size: 13px; letter-spacing: 2px; }
+    .total-angka { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--emas); font-weight: 900; }
+
+    .input-wrap { padding: 12px 16px; }
+    .input-label { font-size: 10px; letter-spacing: 4px; color: var(--teks2); display: block; margin-bottom: 8px; text-transform: uppercase; }
+    .input-bayar {
+      width: 100%; padding: 10px 14px;
+      background: rgba(0,0,0,0.45);
+      border: 1px solid rgba(255,215,0,0.25);
+      border-radius: 9px; color: #fff;
+      font-size: 16px; font-family: 'Lora', serif;
+      outline: none;
+    }
+    .input-bayar:focus { border-color: var(--emas); }
+    .input-bayar::placeholder { color: rgba(245,230,200,0.3); }
+
+    .kembalian-row {
+      margin: 8px 16px;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 14px;
+      border-radius: 9px;
+      font-size: 13px;
+    }
+    .kembalian-ok  { background: rgba(39,174,96,0.2); border: 1px solid rgba(39,174,96,0.35); color: #2ecc71; }
+    .kembalian-err { background: rgba(231,76,60,0.15); border: 1px solid rgba(231,76,60,0.3); color: #e74c3c; }
+    .kembalian-angka { font-weight: 700; font-size: 16px; }
+
+    /* ── TOMBOL AKSI ── */
+    .btn-wrap { display: flex; gap: 10px; padding: 0 14px 16px; }
+    .btn-reset {
+      flex: 1; padding: 13px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 11px; color: var(--teks2);
+      font-size: 14px; cursor: pointer;
+      font-family: 'Lora', serif;
+      transition: background .15s;
+    }
+    .btn-reset:active { background: rgba(255,255,255,0.12); }
+    .btn-struk {
+      flex: 2; padding: 13px;
+      background: linear-gradient(135deg, var(--merah2), var(--merah));
+      border: 2px solid var(--emas);
+      border-radius: 11px; color: var(--emas);
+      font-size: 14px; font-weight: 700; letter-spacing: 2px;
+      cursor: pointer; font-family: 'Playfair Display', serif;
+      box-shadow: 0 4px 18px rgba(192,57,43,0.45);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .btn-struk:active { transform: scale(0.96); box-shadow: none; }
+
+    /* ── MODAL ── */
+    .modal-bg {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.82);
+      z-index: 200; align-items: center; justify-content: center;
+      backdrop-filter: blur(5px);
+    }
+    .modal-bg.aktif { display: flex; }
+
+    .modal-card {
+      background: linear-gradient(145deg, #1a0800, #2d0f00);
+      border-radius: 20px; padding: 26px 20px 20px;
+      width: 88%; max-width: 360px;
+      animation: slideUp .22s ease;
+    }
+    .modal-header { text-align: center; margin-bottom: 20px; }
+    .modal-emoji { font-size: 50px; display: block; margin-bottom: 8px; }
+    .modal-nama { font-family: 'Playfair Display', serif; font-size: 20px; color: #fff; letter-spacing: 2px; text-transform: uppercase; }
+    .modal-harga-kg { font-size: 12px; color: var(--emas); margin-top: 3px; }
+
+    .opsi-label { font-size: 10px; letter-spacing: 5px; color: var(--emas); text-align: center; margin-bottom: 12px; text-transform: uppercase; opacity: 0.8; }
+
+    .harga-tier-label { font-size: 10px; letter-spacing: 4px; color: var(--teks2); text-align: center; margin-bottom: 8px; text-transform: uppercase; }
+    .harga-tier-wrap { display: flex; gap: 8px; margin-bottom: 16px; }
+    .btn-tier {
+      flex: 1; padding: 10px 4px;
+      border-radius: 10px; cursor: pointer;
+      font-size: 13px; font-weight: 700;
+      font-family: 'Lora', serif;
+      color: var(--teks2);
+      background: rgba(255,255,255,0.05);
+      border: 1.5px solid rgba(255,255,255,0.15);
+      transition: all .15s;
+    }
+    .btn-tier:active { transform: scale(0.95); }
+    .btn-tier.aktif {
+      background: linear-gradient(135deg, var(--emas2), var(--emas));
+      color: #1a0800;
+      border-color: var(--emas);
+    }
+
+    .btn-opsi {
+      width: 100%; display: flex;
+      justify-content: space-between; align-items: center;
+      padding: 14px 16px; margin-bottom: 9px;
+      border-radius: 12px; cursor: pointer;
+      font-size: 15px; font-family: 'Lora', serif;
+      color: #fff; border: 1.5px solid transparent;
+      transition: all .15s;
+    }
+    .btn-opsi:active { transform: scale(0.97); }
+    .btn-opsi .opsi-kiri { font-weight: 600; }
+    .btn-opsi .opsi-kanan { font-weight: 700; color: var(--emas); }
+
+    .btn-batal {
+      width: 100%; padding: 11px; margin-top: 6px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 10px; color: var(--teks2);
+      cursor: pointer; font-family: 'Lora', serif; font-size: 13px;
+    }
+    .btn-batal:active { background: rgba(255,255,255,0.12); }
+
+    /* ── STRUK MODAL ── */
+    .struk-card {
+      background: #fffef0;
+      border-radius: 6px; padding: 24px 20px;
+      width: 88%; max-width: 320px;
+      color: #1a0800;
+      font-family: 'Courier New', monospace;
+      animation: slideUp .22s ease;
+      max-height: 88vh; overflow-y: auto;
+    }
+    .struk-title { text-align: center; font-weight: 700; font-size: 15px; letter-spacing: 3px; }
+    .struk-sub { text-align: center; font-size: 10px; letter-spacing: 3px; margin-top: 2px; }
+    .struk-waktu { text-align: center; font-size: 10px; color: #666; margin-top: 4px; }
+    .struk-divider { border-top: 2px dashed #333; margin: 10px 0; }
+    .struk-item { margin-bottom: 7px; }
+    .struk-item-nama { font-size: 12px; font-weight: 600; }
+    .struk-item-detail { display: flex; justify-content: space-between; font-size: 11px; color: #555; padding-left: 8px; }
+    .struk-item-detail .subtotal-struk { font-weight: 700; color: #1a0800; }
+    .struk-total-row { display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; }
+    .struk-bayar-row { display: flex; justify-content: space-between; font-size: 12px; margin-top: 4px; }
+    .struk-footer { text-align: center; font-size: 10px; color: #666; letter-spacing: 1px; line-height: 1.8; margin-top: 6px; }
+    
+    .struk-btn-wrap { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+    .struk-btn-row { display: flex; gap: 8px; }
+    
+    .struk-btn-back {
+      flex: 1; padding: 10px;
+      background: #f0e0c0; border: 1px solid #8B5E3C;
+      border-radius: 6px; cursor: pointer;
+      font-family: 'Courier New', monospace; font-size: 12px;
+    }
+    .struk-btn-print {
+      flex: 1; padding: 10px;
+      background: #27ae60; border: none;
+      border-radius: 6px; color: #fff;
+      cursor: pointer;
+      font-family: 'Courier New', monospace; font-size: 12px; font-weight: 700;
+    }
+    .struk-btn-baru {
+      width: 100%; padding: 10px;
+      background: #8B0000; border: none;
+      border-radius: 6px; color: #fff;
+      cursor: pointer;
+      font-family: 'Courier New', monospace; font-size: 12px; font-weight: 700;
+    }
+
+    /* ── ANIMASI ── */
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(28px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes popIn {
+      0%   { opacity: 0; transform: translateX(-10px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ── NOMOR PESANAN FLOATING ── */
+    .fab-total {
+      display: none;
+      position: fixed; bottom: 18px; right: 16px;
+      background: linear-gradient(135deg, var(--merah2), var(--merah));
+      border: 2px solid var(--emas);
+      border-radius: 50px; padding: 10px 18px;
+      color: var(--emas); font-weight: 700; font-size: 13px;
+      box-shadow: 0 6px 20px rgba(192,57,43,0.5);
+      cursor: pointer; z-index: 40;
+      font-family: 'Playfair Display', serif;
+    }
+    .fab-total.tampil { display: block; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="sub">✦ Sambal Sedap ✦</div>
+  <h1>🌶️ SAMBAL SEDAP 🌶️</h1>
+  <div class="waktu" id="jam"></div>
+</header>
+
+<main>
+  <div class="sec-title">✦ Pilih Sambal ✦</div>
+  <div class="grid-sambal" id="gridSambal"></div>
+
+  <div class="box">
+    <div class="box-head">
+      <span>🛒 PESANAN</span>
+      <span class="badge" id="badgeJml">0 item</span>
+    </div>
+    <div id="keranjangList">
+      <div class="empty-msg" id="emptyMsg">
+        Belum ada pesanan.<br>Pilih sambal di atas! 👆
+      </div>
+    </div>
+  </div>
+
+  <div class="total-box" id="totalBox" style="display:none">
+    <div class="total-row">
+      <span class="total-label">TOTAL</span>
+      <span class="total-angka" id="totalAngka">Rp 0</span>
+    </div>
+    <div class="input-wrap">
+      <label class="input-label">Uang Bayar</label>
+      <input type="number" inputmode="numeric" class="input-bayar" id="inputBayar"
+        placeholder="Masukkan nominal..." oninput="hitungKembalian()" />
+    </div>
+    <div id="kembalianBox"></div>
+    <div class="btn-wrap">
+      <button class="btn-reset" onclick="resetTransaksi()">🗑️ Reset</button>
+      <button class="btn-struk" onclick="tampilStruk()">🧾 Buka Struk</button>
+    </div>
+  </div>
+</main>
+
+<div class="modal-bg" id="modalOns">
+  <div class="modal-card" id="modalCard">
+    <div class="modal-header">
+      <span class="modal-emoji" id="mEmoji"></span>
+      <div class="modal-nama" id="mNama"></div>
+      <div class="modal-harga-kg" id="mHargaKg"></div>
+    </div>
+    <div class="harga-tier-label">Harga / Kilo (Nego)</div>
+    <div class="harga-tier-wrap" id="tierList"></div>
+    <div class="opsi-label">Pilih Ukuran</div>
+    <div id="opsiList"></div>
+    <button class="btn-batal" onclick="tutupModal()">✕ Batal</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="modalStruk">
+  <div class="struk-card" id="struk"></div>
+</div>
+
+<script>
+// ── DATA ──
+const SAMBALS = [
+  { id:'habang',  nama:'HABANG',       emoji:'🌶️', warna:'#c0392b', harga:60000 },
+  { id:'kareh',   nama:'KAREH',        emoji:'🔥', warna:'#e67e22', harga:60000 },
+  { id:'rawon',   nama:'RAWON',        emoji:'🍲', warna:'#4a3000', harga:60000 },
+  { id:'sop',     nama:'SOP',          emoji:'🥣', warna:'#27ae60', harga:60000 },
+];
+const OPSI = [
+  { label:'½ ons',   gram:50,   faktor:50/1000   },
+  { label:'1 ons',   gram:100,  faktor:100/1000  },
+  { label:'¼ ons',   gram:25,   faktor:25/1000   },
+  { label:'7½ ons',  gram:750,  faktor:750/1000  },
+  { label:'1 Kilo',  gram:1000, faktor:1         },
+];
+
+// Pilihan tingkat harga jual per kilo (untuk nego pelanggan)
+const HARGA_TIERS = [50000, 55000, 60000];
+
+let keranjang = [];
+let sambalAktif = null;
+let bluetoothDevice = null;
+let printCharacteristic = null;
+
+// URL GOOGLE APP SCRIPT MILIK KAMU SUDAH TERSAMBUNG AUTOMATIS DI SINI SAH!
+const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbyLt3WGpUj76a0IEEtqkPejN5MiXo0jSAX7g8682MKRseOlYVVujiT8rdyoKPJheWei/exec";
+
+// ── FORMAT RUPIAH ──
+function rp(n){ return 'Rp '+n.toLocaleString('id-ID'); }
+
+// ── JAM ──
+function updateJam(){
+  document.getElementById('jam').textContent =
+    new Date().toLocaleString('id-ID',{dateStyle:'long',timeStyle:'short'});
+}
+updateJam(); setInterval(updateJam,1000);
+
+// ── BUILD GRID SAMBAL ──
+const grid = document.getElementById('gridSambal');
+SAMBALS.forEach(s=>{
+  const btn = document.createElement('button');
+  btn.className = 'kartu-sambal';
+  btn.style.background = `linear-gradient(145deg,${s.warna}cc,${s.warna}77)`;
+  btn.style.borderColor = s.warna;
+  btn.style.boxShadow = `0 6px 18px ${s.warna}44`;
+  btn.innerHTML = `
+    <span class="emoji">${s.emoji}</span>
+    <div class="nama-sambal">${s.nama}</div>
+    <div class="harga-tag">${rp(s.harga)}/kg</div>`;
+  btn.onclick = ()=>bukaModal(s);
+  grid.appendChild(btn);
+});
+
+// ── MODAL ONS ──
+let hargaAktif = 60000;
+
+function renderTierList(s){
+  const tl = document.getElementById('tierList');
+  tl.innerHTML='';
+  HARGA_TIERS.forEach(t=>{
+    const b = document.createElement('button');
+    b.className = 'btn-tier' + (t===hargaAktif ? ' aktif' : '');
+    b.textContent = rp(t);
+    b.onclick = ()=>{ hargaAktif = t; renderTierList(s); renderOpsiList(s); };
+    tl.appendChild(b);
+  });
+}
+
+function renderOpsiList(s){
+  const ol = document.getElementById('opsiList');
+  ol.innerHTML='';
+  OPSI.forEach(o=>{
+    const harga = Math.round(hargaAktif * o.faktor);
+    const b = document.createElement('button');
+    b.className='btn-opsi';
+    b.style.background=`linear-gradient(135deg,${s.warna}33,${s.warna}11)`;
+    b.style.borderColor=`${s.warna}77`;
+    b.innerHTML=`<span class="opsi-kiri">${o.label}</span><span class="opsi-kanan">${rp(harga)}</span>`;
+    b.ontouchstart=()=>{ b.style.background=`linear-gradient(135deg,${s.warna}88,${s.warna}44)`; b.style.borderColor='#FFD700'; };
+    b.ontouchend=()=>{ b.style.background=`linear-gradient(135deg,${s.warna}33,${s.warna}11)`; b.style.borderColor=`${s.warna}77`; };
+    b.onclick=()=>tambahItem(s,o,harga);
+    ol.appendChild(b);
+  });
+}
+
+function bukaModal(s){
+  sambalAktif = s;
+  hargaAktif = s.harga;
+  document.getElementById('mEmoji').textContent = s.emoji;
+  document.getElementById('mNama').textContent  = s.nama;
+  document.getElementById('mHargaKg').textContent = rp(s.harga)+' / kilogram';
+  document.getElementById('modalCard').style.borderColor = s.warna;
+  document.getElementById('modalCard').style.boxShadow = `0 20px 60px ${s.warna}66`;
+
+  renderTierList(s);
+  renderOpsiList(s);
+
+  document.getElementById('modalOns').classList.add('aktif');
+}
+function tutupModal(){
+  document.getElementById('modalOns').classList.remove('aktif');
+  sambalAktif=null;
+}
+document.getElementById('modalOns').addEventListener('click',function(e){
+  if(e.target===this) tutupModal();
+});
+
+// ── PESANAN LOGIC ──
+function tambahItem(s,o,hargaSatuan){
+  const tierNote = hargaSatuan !== Math.round(s.harga*o.faktor) ? ' (Nego)' : '';
+  const labelOpsi = o.label + tierNote;
+  const key=`${s.id}-${o.gram}-${hargaSatuan}`;
+  const ada = keranjang.find(k=>k.key===key);
+  if(ada){ ada.qty++; ada.subtotal=ada.qty*ada.hargaSatuan; }
+  else {
+    grid.style.pointerEvents = 'none';
+    setTimeout(() => grid.style.pointerEvents = 'auto', 300);
+    keranjang.push({
+      key, id:s.id, nama:s.nama, emoji:s.emoji,
+      warna:s.warna, opsiLabel:labelOpsi,
+      hargaSatuan, qty:1, subtotal:hargaSatuan
+    });
+  }
+  tutupModal();
+  renderPesanan();
+}
+
+function kurangi(key){
+  const i=keranjang.find(k=>k.key===key);
+  if(!i) return;
+  i.qty--; i.subtotal=i.qty*i.hargaSatuan;
+  if(i.qty<=0) keranjang=keranjang.filter(k=>k.key!==key);
+  renderPesanan();
+}
+function tambah(key){
+  const i=keranjang.find(k=>k.key===key);
+  if(!i) return;
+  i.qty++; i.subtotal=i.qty*i.hargaSatuan;
+  renderPesanan();
+}
+function hapus(key){
+  keranjang=keranjang.filter(k=>k.key!==key);
+  renderPesanan();
+}
+
+function renderPesanan(){
+  const list = document.getElementById('keranjangList');
+  const empty= document.getElementById('emptyMsg');
+  const totalBox=document.getElementById('totalBox');
+  document.getElementById('badgeJml').textContent=keranjang.length+' item';
+
+  if(keranjang.length===0){
+    list.innerHTML='';
+    list.appendChild(Object.assign(document.createElement('div'),{className:'empty-msg',innerHTML:'Belum ada pesanan.<br>Pilih sambal di atas! 👆'}));
+    totalBox.style.display='none';
+    return;
+  }
+
+  list.innerHTML='<div class="item-list" id="itemList"></div>';
+  const il=document.getElementById('itemList');
+  keranjang.forEach(item=>{
+    const row=document.createElement('div');
+    row.className='item-row';
+    row.innerHTML=`
+      <span class="item-emoji">${item.emoji}</span>
+      <div class="item-info">
+        <div class="item-nama">${item.nama} ${item.opsiLabel}</div>
+        <div class="item-sub">${rp(item.hargaSatuan)}/Harga</div>
+      </div>
+      <div class="qty-wrap">
+        <button class="btn-qty btn-minus" onclick="kurangi('${item.key}')">−</button>
+        <span class="qty-num">${item.qty}</span>
+        <button class="btn-qty btn-plus"  onclick="tambah('${item.key}')">+</button>
+      </div>
+      <div class="item-total">${rp(item.subtotal)}</div>
+      <button class="btn-hapus" onclick="hapus('${item.key}')">✕</button>`;
+    il.appendChild(row);
+  });
+
+  const total = keranjang.reduce((s,i)=>s+i.subtotal,0);
+  document.getElementById('totalAngka').textContent = rp(total);
+  totalBox.style.display='block';
+  hitungKembalian();
+}
+
+function totalHarga(){ return keranjang.reduce((s,i)=>s+i.subtotal,0); }
+
+function hitungKembalian(){
+  const bayar=parseInt(document.getElementById('inputBayar').value||0);
+  const box=document.getElementById('kembalianBox');
+  const total=totalHarga();
+  if(!bayar){ box.innerHTML=''; return; }
+  const kembalian=bayar-total;
+  if(kembalian>=0){
+    box.innerHTML=`<div class="kembalian-row kembalian-ok"><span>💰 KEMBALIAN</span><span class="kembalian-angka">${rp(kembalian)}</span></div>`;
+  } else {
+    box.innerHTML=`<div class="kembalian-row kembalian-err"><span>⚠️ Kurang</span><span class="kembalian-angka">${rp(Math.abs(kembalian))}</span></div>`;
+  }
+}
+
+// ── FUNGSI LINGKUNGAN PUSAT GOOGLE SHEETS ──
+function kirimLaporanKeSheets() {
+  if (!GOOGLE_SHEETS_URL) return;
+
+  const bayar = parseInt(document.getElementById('inputBayar').value || 0);
+  const total = totalHarga();
+  const kembalian = Math.max(0, bayar - total);
+  const waktu = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+
+  let detailPesanan = keranjang.map(item => `${item.nama} ${item.opsiLabel} (${item.qty}x)`).join(", ");
+
+  const dataPenjualan = {
+    waktu: waktu,
+    detail: detailPesanan,
+    total: total,
+    bayar: bayar,
+    kembalian: kembalian
+  };
+
+  fetch(GOOGLE_SHEETS_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(dataPenjualan)
+  })
+  .then(() => console.log("Data sukses terkirim ke Sheets!"))
+  .catch(err => console.error("Gagal kirim data:", err));
+}
+
+// ── STRUK ──
+function tampilStruk(){
+  const bayar=parseInt(document.getElementById('inputBayar').value||0);
+  const total=totalHarga();
+  const kembalian=bayar-total;
+  const waktu=new Date().toLocaleString('id-ID',{dateStyle:'long',timeStyle:'short'});
+
+  let itemsHTML=keranjang.map(item=>`
+    <div class="struk-item">
+      <div class="struk-item-nama">${item.nama} ${item.opsiLabel}</div>
+      <div class="struk-item-detail">
+        <span>${item.qty} × ${rp(item.hargaSatuan)}</span>
+        <span class="subtotal-struk">${rp(item.subtotal)}</span>
+      </div>
+    </div>`).join('');
+
+  const bayarHTML = bayar ? `
+    <div class="struk-bayar-row"><span>BAYAR</span><span>${rp(bayar)}</span></div>
+    <div class="struk-bayar-row"><span>KEMBALI</span><span style="font-weight:700">${rp(Math.max(0,kembalian))}</span></div>` : '';
+
+  document.getElementById('struk').innerHTML=`
+    <div class="struk-title"> SAMBAL SEDAP</div>
+    <div class="struk-sub">Rempahnya Lengkap</div>
+    <div class="struk-waktu">${waktu}</div>
+    <div class="struk-divider"></div>
+    ${itemsHTML}
+    <div class="struk-divider"></div>
+    <div class="struk-total-row"><span>TOTAL</span><span>${rp(total)}</span></div>
+    ${bayarHTML}
+    <div class="struk-divider"></div>
+    <div class="struk-footer">✦ Terima Kasih ✦<br>Terima Pesanan WA : 089523374816<br><br><span style="font-size:9px;letter-spacing:0.5px;color:#444;font-style:italic;">اللَّهُمَّ صَلِّ عَلَى سَيِّدِنَا مُحَمَّدٍ وَعَلَى آلِ سَيِّدِنَا مُحَمَّدٍ</span><br><span style="font-size:9px;color:#555;">Allahumma shalli 'alaa Sayyidina Muhammad,<br>wa 'alaa aali Sayyidina Muhammad.</span></div>
+    <div class="struk-btn-wrap">
+      <div class="struk-btn-row">
+        <button class="struk-btn-back" onclick="tutupStruk()">← Kembali</button>
+        <button class="struk-btn-print" onclick="cetakBluetooth()">🖨️ CETAK</button>
+      </div>
+      <button class="struk-btn-baru" onclick="selesaiDanSimpanTransaksi()">Transaksi Baru</button>
+    </div>`;
+
+  document.getElementById('modalStruk').classList.add('aktif');
+}
+
+function selesaiDanSimpanTransaksi() {
+  kirimLaporanKeSheets();
+  resetTransaksi();
+  tutupStruk();
+}
+
+function resetTransaksi(){
+  keranjang=[];
+  document.getElementById('inputBayar').value='';
+  document.getElementById('kembalianBox').innerHTML='';
+  renderPesanan();
+}
+
+function tutupStruk(){
+  document.getElementById('modalStruk').classList.remove('aktif');
+}
+
+document.getElementById('modalStruk').addEventListener('click',function(e){
+  if(e.target===this) tutupStruk();
+});
+
+// ── BLUETOOTH PRINTING LOGIC (ESC/POS) ──
+async function cetakBluetooth() {
+  kirimLaporanKeSheets();
+  const bayar = parseInt(document.getElementById('inputBayar').value || 0);
+  const total = totalHarga();
+  const kembalian = bayar - total;
+  const waktu = new Date().toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
+
+  let p = "";
+  const baris = "--------------------------------\n";
+  
+  p += "\x1b\x61\x01"; 
+  p += "SAMBAL SEDAP\n";
+  p += "Rempahnya Lengkap\n";
+  p += waktu + "\n";
+  p += baris;
+
+  p += "\x1b\x61\x00"; 
+  keranjang.forEach(item => {
+    p += `${item.nama} ${item.opsiLabel}\n`;
+    let detailKiri = `  ${item.qty} x ${item.hargaSatuan.toLocaleString('id-ID')}`;
+    let detailKanan = item.subtotal.toLocaleString('id-ID');
+    let spasiJarak = 32 - detailKiri.length - detailKanan.length;
+    if (spasiJarak < 1) spasiJarak = 1;
+    p += detailKiri + " ".repeat(spasiJarak) + detailKanan + "\n";
+  });
+  
+  p += baris;
+  
+  let txtTotal = total.toLocaleString('id-ID');
+  p += "TOTAL" + " ".repeat(32 - 5 - txtTotal.length) + txtTotal + "\n";
+  
+  if (bayar > 0) {
+    let txtBayar = bayar.toLocaleString('id-ID');
+    let txtKembali = Math.max(0, kembalian).toLocaleString('id-ID');
+    p += "BAYAR" + " ".repeat(32 - 5 - txtBayar.length) + txtBayar + "\n";
+    p += "KEMBALI" + " ".repeat(32 - 7 - txtKembali.length) + txtKembali + "\n";
+  }
+  
+  p += baris;
+  p += "\x1b\x61\x01"; 
+  p += "✦ Terima Kasih ✦\n";
+  p += "Terima Pesanan WA : 089523374816\n";
+  p += "--------------------------------\n";
+  p += "Allahumma shalli 'alaa Sayyidina\n";
+  p += "Muhammad, wa 'alaa aali\n";
+  p += "Sayyidina Muhammad.\n\n\n\n"; 
+
+  try {
+    if (!printCharacteristic) {
+      alert("Menghubungkan ke printer bluetooth... Pastikan printer sudah menyala.");
+      
+      bluetoothDevice = await navigator.bluetooth.requestDevice({
+        filters: [{ services: ['000018f0-0000-1000-8000-00805f9b34fb'] }], 
+        optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb']
+      });
+      
+      const server = await bluetoothDevice.gatt.connect();
+      const service = await server.getPrimaryService('000018f0-0000-1000-8000-00805f9b34fb');
+      
+      const characteristics = await service.getCharacteristics();
+      printCharacteristic = characteristics.find(c => c.properties.write || c.properties.writeWithoutResponse);
+      
+      if (!printCharacteristic) throw new Error("Karakteristik printer tidak ditemukan.");
+    }
+
+    const encoder = new TextEncoder();
+    const dataUint8 = encoder.encode(p);
+    
+    const KELOMPOK_BYTE = 20;
+    for (let i = 0; i < dataUint8.length; i += KELOMPOK_BYTE) {
+      const bagian = dataUint8.slice(i, i + KELOMPOK_BYTE);
+      await printCharacteristic.writeValue(bagian);
+    }
+    
+    alert("Struk berhasil dicetak!");
+  } catch (error) {
+    console.error(error);
+    alert("Gagal mencetak: " + error.message + "\n\nTips: Pastikan gunakan Google Chrome/Samsung Internet dan aktifkan Bluetooth HP.");
+    printCharacteristic = null;
+  }
+}
+// ── DAFTARKAN SERVICE WORKER (biar bisa di-install & jalan offline) ──
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(err => console.log('SW gagal:', err));
+  });
+}
+</script>
+</body>
+</html>
